@@ -55,7 +55,7 @@ public class LargeFileSorter
     {
         var lines = new List<LineData>();
 
-        var reader = new StateMachineFileReader(input);
+        var reader = new LargeFileReader(input);
 
         long currentSize = 0;
         while (!reader.EndOfStream)
@@ -116,15 +116,15 @@ public class LargeFileSorter
         }
 
         // Priority queue to hold the smallest line from each file
-        var heap = new PriorityQueue<(LineData, StateMachineFileReader), LineData>(new LineComparer());
+        var heap = new PriorityQueue<(LineData, LargeFileReader), LineData>(new LineComparer());
 
         // Open readers for all temp files and seed the heap with the first line from each
-        var readers = new List<StateMachineFileReader>(_tempFiles.Count);
+        var readers = new List<LargeFileReader>(_tempFiles.Count);
         try
         {
             foreach (var tempFile in _tempFiles)
             {
-                var reader = new StateMachineFileReader(tempFile);
+                var reader = new LargeFileReader(tempFile);
 
                 readers.Add(reader);
                 if (!reader.EndOfStream)

@@ -2,7 +2,12 @@
 
 namespace Sorter;
 
-public class StateMachineFileReader : IDisposable
+/// <summary>
+/// Custom reader that reads file line-by-line efficiently. Leverages Span
+/// and Memory data types and array pooling to minimize string allocations
+/// and reduce garbage collection overhead
+/// </summary>
+public class LargeFileReader : IDisposable
 {
     private const int BufferSize = 8192;
 
@@ -26,7 +31,7 @@ public class StateMachineFileReader : IDisposable
         EndOfStream
     }
 
-    public StateMachineFileReader(string inputPath)
+    public LargeFileReader(string inputPath)
     {
         _internalReader = new StreamReader(inputPath);
         _pool = ArrayPool<char>.Shared;
