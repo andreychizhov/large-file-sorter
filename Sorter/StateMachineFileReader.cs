@@ -19,11 +19,11 @@ public class StateMachineFileReader : IDisposable
 
     private enum State
     {
-        Reading,       // Awaiting ReadAsync
-        Parsing,       // Scanning for \r or \r\n
-        LineFound,     // Ready to return LineData
-        BufferPartial, // Handle partial line
-        EndOfStream    // Stream exhausted
+        Reading,
+        Parsing,
+        LineFound,
+        BufferPartial,
+        EndOfStream
     }
 
     public StateMachineFileReader(string inputPath)
@@ -82,7 +82,7 @@ public class StateMachineFileReader : IDisposable
                             var lineTextEnd = _position - _lineStart;
 
                             var lineSpan = bufferSpan.Slice(_lineStart, lineTextEnd);
-                            result = ParseLine3(lineSpan);
+                            result = ParseLine(lineSpan);
 
                             _totalRead += lineEnd - _lineStart;
                             _lineStart = lineEnd;
@@ -134,7 +134,7 @@ public class StateMachineFileReader : IDisposable
         }
     }
 
-    private static LineData ParseLine3(ReadOnlySpan<char> line)
+    private static LineData ParseLine(ReadOnlySpan<char> line)
     {
         var dotIndex = line.IndexOf(". ");
         if (dotIndex == -1) throw new FormatException("Invalid line format.");
@@ -149,3 +149,5 @@ public class StateMachineFileReader : IDisposable
         return new LineData(number, textArray.AsMemory(0, textSpan.Length), textArray);
     }
 }
+
+internal readonly record struct LineData(int Number, ReadOnlyMemory<char> Text, char[] Buffer);
