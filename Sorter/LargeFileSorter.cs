@@ -70,6 +70,7 @@ public class LargeFileSorter
         long currentSize = 0;
         while (!reader.EndOfStream)
         {
+            // File IO exception handling is omitted for clarity
             var nextLine = await reader.ReadLineAsync();
 
             if (nextLine != default)

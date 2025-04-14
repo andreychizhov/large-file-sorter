@@ -46,13 +46,13 @@ public class LargeFileReader : IDisposable
         _state = State.Reading;
     }
 
-    internal long TotalRead => _totalRead;
+    public long TotalRead => _totalRead;
 
-    internal bool EndOfStream => _state == State.EndOfStream;
+    public bool EndOfStream => _state == State.EndOfStream;
 
-    internal void Close() => _internalReader.Close();
+    public void Close() => _internalReader.Close();
 
-    internal async Task<LineData> ReadLineAsync()
+    public async Task<LineData> ReadLineAsync()
     {
         if (_isDone)
             return default;
