@@ -5,7 +5,8 @@ namespace Sorter;
 /// <summary>
 /// Custom reader that reads file line-by-line efficiently. Leverages Span
 /// and Memory data types and array pooling to minimize string allocations
-/// and reduce garbage collection overhead
+/// and reduce garbage collection overhead. This is an attempt to create a more
+/// efficient alternative to StreamReader's ReadLineAsync method.
 /// </summary>
 public class LargeFileReader : IDisposable
 {
@@ -79,6 +80,10 @@ public class LargeFileReader : IDisposable
                     var bufferSpan = _buffer.AsSpan(0, _textEnd);
                     if (_position < _textEnd - 1)
                     {
+                        // Edge case when last line has no moving symbol(s) is not covered here
+                        // to not overwhelm solution with unnecessary details. Let's assume that
+                        // input file always has last line followed by new line
+                        // Let's also assume that all the lines fit entirely to 8KB buffer
                         if (bufferSpan[_position] == '\r')
                         {
                             var lineEnd = bufferSpan[_position + 1] == '\n'
@@ -87,7 +92,7 @@ public class LargeFileReader : IDisposable
                             var lineTextEnd = _position - _lineStart;
 
                             var lineSpan = bufferSpan.Slice(_lineStart, lineTextEnd);
-                            result = ParseLine(lineSpan);
+                            result = LineParser.Parse(lineSpan);
 
                             _totalRead += lineEnd - _lineStart;
                             _lineStart = lineEnd;
@@ -138,21 +143,4 @@ public class LargeFileReader : IDisposable
             _pool.Return(_buffer);
         }
     }
-
-    private static LineData ParseLine(ReadOnlySpan<char> line)
-    {
-        var dotIndex = line.IndexOf(". ");
-        if (dotIndex == -1) throw new FormatException("Invalid line format.");
-
-        if (!int.TryParse(line[..dotIndex], out var number))
-            throw new FormatException("Invalid number format.");
-
-        var textSpan = line[(dotIndex + 2)..];
-        var textArray = ArrayPool<char>.Shared.Rent(textSpan.Length);
-        textSpan.CopyTo(textArray);
-
-        return new LineData(number, textArray.AsMemory(0, textSpan.Length), textArray);
-    }
 }
-
-internal readonly record struct LineData(int Number, ReadOnlyMemory<char> Text, char[] Buffer);

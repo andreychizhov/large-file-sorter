@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestFileGenerator", "TestFi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sorter", "Sorter\Sorter.csproj", "{38897D4C-416F-40B1-AB29-BCC4EB44CD34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sorter.Tests", "Sorter.Tests\Sorter.Tests.csproj", "{8638504C-1EE0-4268-A892-4E01183A533E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{38897D4C-416F-40B1-AB29-BCC4EB44CD34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38897D4C-416F-40B1-AB29-BCC4EB44CD34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38897D4C-416F-40B1-AB29-BCC4EB44CD34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8638504C-1EE0-4268-A892-4E01183A533E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8638504C-1EE0-4268-A892-4E01183A533E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8638504C-1EE0-4268-A892-4E01183A533E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8638504C-1EE0-4268-A892-4E01183A533E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

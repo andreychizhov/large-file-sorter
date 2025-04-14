@@ -4,7 +4,7 @@ internal class LineComparer : IComparer<LineData>
 {
     public int Compare(LineData a, LineData b)
     {
-        var textCompare = a.Text.Span.CompareTo(b.Text.Span, StringComparison.Ordinal);
+        var textCompare = a.Text.Span.CompareTo(b.Text.Span, StringComparison.OrdinalIgnoreCase);
 
         return textCompare != 0
             ? textCompare

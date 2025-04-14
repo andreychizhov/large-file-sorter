@@ -7,9 +7,11 @@ namespace Sorter;
 public class LargeFileSorter
 {
     private const long MaxChunkSize = 1_073_741_824; // 1GB
+    private const int MinChunkSize = 10 * 1 << 10; // 10KB
+
     private readonly ConcurrentBag<string> _tempFiles = new ConcurrentBag<string>();
 
-    public async Task SortLargeFile(string input, string output)
+    public async Task SortFile(string input, string output)
     {
         await SplitAndSort(input);
 
@@ -26,9 +28,7 @@ public class LargeFileSorter
         var channelCapacity = Environment.ProcessorCount;
         var inputSize = new FileInfo(input).Length;
 
-        var chunkSize = inputSize > MaxChunkSize * channelCapacity
-            ? MaxChunkSize
-            : inputSize / channelCapacity;
+        var chunkSize = GetChunkSize(inputSize, channelCapacity);
 
         // Limit the number of chunks to process in parallel; use asynchronous producer-consumer pattern
         var channel = Channel.CreateBounded<List<LineData>>(new BoundedChannelOptions(channelCapacity)
@@ -45,6 +45,16 @@ public class LargeFileSorter
         channel.Writer.Complete();
 
         await consumers;
+    }
+
+    private static long GetChunkSize(long inputSize, int channelCapacity)
+    {
+        if (inputSize < MinChunkSize)
+            return MinChunkSize;
+
+        return inputSize > MaxChunkSize * channelCapacity
+            ? MaxChunkSize
+            : inputSize / channelCapacity;
     }
 
 
